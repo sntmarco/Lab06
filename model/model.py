@@ -1,6 +1,7 @@
 from database.DB_connect import get_connection
 from model.automobile import Automobile
 from model.noleggio import Noleggio
+from UI.alert import AlertManager
 
 '''
     MODELLO: 
@@ -35,15 +36,28 @@ class Autonoleggio:
             Funzione che legge tutte le automobili nel database
             :return: una lista con tutte le automobili presenti oppure None
         """
-        cnx = get_connection
-        if cnx is None: print("Database connection failed")
+        cnx = get_connection()
+        if cnx is None:
+            print("Database connection failed")
+            return None
 
-        cursor = cnx.cursor(Dictionary=True)
+        cursor = cnx.cursor(dictionary=True)
         query = """SELECT * FROM automobile"""
-        cursor.execute(query, )
-        cnx.commit()
+        cursor.execute(query)
+        lista_automobili = []
+        row = cursor.fetchone()
+        while row is not None:
+            lista_automobili.append(Automobile(row['codice'],
+                                        row['marca'],
+                                        row['modello'],
+                                        row['anno'],
+                                        row['posti'],
+                                        row["disponibile"]))
+            row = cursor.fetchone()
         cursor.close()
         cnx.close()
+        return lista_automobili
+
 
     def cerca_automobili_per_modello(self, modello) -> list[Automobile] | None:
         """
@@ -51,4 +65,27 @@ class Autonoleggio:
             :param modello: il modello dell'automobile
             :return: una lista con tutte le automobili di marca e modello indicato oppure None
         """
-        # TODO
+        cnx = get_connection()
+        if cnx is None:
+            print("Database connection failed")
+            return None
+
+
+        cursor = cnx.cursor(dictionary=True)
+        query = """SELECT * 
+                   FROM automobile
+                   WHERE modello = %s"""
+        cursor.execute(query, (modello,))
+        lista_automobili_cercate = []
+        row = cursor.fetchone()
+        while row is not None:
+            lista_automobili_cercate.append(Automobile(row['codice'],
+                                               row['marca'],
+                                               row['modello'],
+                                               row['anno'],
+                                               row['posti'],
+                                               row["disponibile"]))
+            row = cursor.fetchone()
+        cursor.close()
+        cnx.close()
+        return lista_automobili_cercate
