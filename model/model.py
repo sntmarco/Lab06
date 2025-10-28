@@ -35,8 +35,15 @@ class Autonoleggio:
             Funzione che legge tutte le automobili nel database
             :return: una lista con tutte le automobili presenti oppure None
         """
+        cnx = get_connection
+        if cnx is None: print("Database connection failed")
 
-        # TODO
+        cursor = cnx.cursor(Dictionary=True)
+        query = """SELECT * FROM automobile"""
+        cursor.execute(query, )
+        cnx.commit()
+        cursor.close()
+        cnx.close()
 
     def cerca_automobili_per_modello(self, modello) -> list[Automobile] | None:
         """

@@ -63,7 +63,9 @@ class View:
         pulsante_conferma_responsabile = ft.ElevatedButton("Conferma", on_click=self.controller.conferma_responsabile)
 
         # Altri Pulsanti da implementare (es. "Mostra" e "Cerca")
-        # TODO
+        self.txt_automobili = ft.Text(value="Automobili", size=20)
+        self.btn_mostra_automobili = ft.ElevatedButton(text="Mostra", on_click=self.controller.get_automobili)
+
 
         # --- LAYOUT ---
         self.page.add(
